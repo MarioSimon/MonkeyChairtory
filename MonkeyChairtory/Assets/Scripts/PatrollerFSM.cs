@@ -7,6 +7,7 @@ public class PatrollerFSM : MonoBehaviour
 {
     private enum MyState { Patrolling, Peeing, CheckDoor, ChaseMonkey, JailMonkey };
     [SerializeField] private MyState myState;
+    [SerializeField] private float nearDistance;
 
     [Header("Patrolling behaviour")]
     public Transform[] patrollingPoints;
@@ -26,7 +27,6 @@ public class PatrollerFSM : MonoBehaviour
 
     [Header("Chasing monkey behaviour")]
     [SerializeField] private int angryMonkeys;
-    [SerializeField] private float nearDistance;
 
     [Header("Jailing monkey behaviour")]
     public Transform jailTransform;
@@ -34,8 +34,6 @@ public class PatrollerFSM : MonoBehaviour
 
     private StateMachineEngine patrollerFSM;
     private NavMeshAgent agent;
-
-    
 
     // Start is called before the first frame update
     void Start()
@@ -45,6 +43,7 @@ public class PatrollerFSM : MonoBehaviour
 
         doorTransform = GameObject.Find("DoorPosition").transform;
         jailTransform = GameObject.Find("JailPosition").transform;
+        peeingPoint = GameObject.Find("PeeingPoint").transform;
 
         SetPatrollingPoints();
         SetRandomTimeToPee();
@@ -122,6 +121,7 @@ public class PatrollerFSM : MonoBehaviour
             myState = MyState.JailMonkey;
             agent.SetDestination(jailTransform.position);
         });
+
 
         //Transitions
         patrollerFSM.CreateTransition("going to pee", patrolling, needsToPee, peeing);
@@ -319,7 +319,7 @@ public class PatrollerFSM : MonoBehaviour
         return false;
     }
 
-    public float FlattenedDistance(Vector3 a, Vector3 b)
+    float FlattenedDistance(Vector3 a, Vector3 b)
     {
         a.y = 0;
         b.y = 0;
