@@ -5,6 +5,9 @@ using UnityEngine.AI;
 
 public class PatrollerFSM : MonoBehaviour
 {
+    private enum MyState { Patrolling, Peeing, CheckDoor, ChaseMonkey, JailMonkey };
+    [SerializeField] private MyState myState;
+
     [Header("Patrolling behaviour")]
     public Transform[] patrollingPoints;
     [SerializeField] private int patrollingIndex;
@@ -22,7 +25,7 @@ public class PatrollerFSM : MonoBehaviour
     public Transform doorTransform;
 
     [Header("Chasing monkey behaviour")]
-    public int angryMonkeys;
+    [SerializeField] private int angryMonkeys;
     [SerializeField] private float nearDistance;
 
     [Header("Jailing monkey behaviour")]
@@ -32,8 +35,7 @@ public class PatrollerFSM : MonoBehaviour
     private StateMachineEngine patrollerFSM;
     private NavMeshAgent agent;
 
-    private enum MyState { Patrolling, Peeing, CheckDoor, ChaseMonkey, JailMonkey };
-    private MyState myState;
+    
 
     // Start is called before the first frame update
     void Start()
@@ -41,6 +43,10 @@ public class PatrollerFSM : MonoBehaviour
         myState = MyState.Patrolling;
         agent = GetComponent<NavMeshAgent>();
 
+        doorTransform = GameObject.Find("DoorPosition").transform;
+        jailTransform = GameObject.Find("JailPosition").transform;
+
+        SetPatrollingPoints();
         SetRandomTimeToPee();
 
         patrollerFSM = new StateMachineEngine();
@@ -65,21 +71,31 @@ public class PatrollerFSM : MonoBehaviour
         timeToPee = UnityEngine.Random.Range(minTimeToPee, maxTimeToPee);
     }
 
+    void SetPatrollingPoints()
+    {
+        var patrollingParent = GameObject.Find("PatrollingPoints");
+
+        List<Transform> auxList = new List<Transform>();
+        patrollingParent.GetComponentsInChildren(false, auxList);
+
+        auxList.RemoveAll((elem) => { return elem.gameObject.name == "PatrollingPoints"; });
+        patrollingPoints = auxList.ToArray();
+    }
+
     void CreateStateMachine()
     {
         //Perceptions
         Perception needsToPee = patrollerFSM.CreatePerception<TimerPerception>(timeToPee);
         Perception endedPeeing = patrollerFSM.CreatePerception<PushPerception>();
 
-        Perception receiveWarning = patrollerFSM.CreatePerception<PushPerception>();
-        Perception angryMonkeys = patrollerFSM.CreatePerception<PushPerception>();
-        Perception noAngryMonkeys = patrollerFSM.CreatePerception<PushPerception>();
+        Perception angryMonkeys = patrollerFSM.CreatePerception<ValuePerception>(AngryGorillasLeft);
+        Perception noAngryMonkeys = patrollerFSM.CreatePerception<ValuePerception>(NotAngryGorillasLeft);
 
-        Perception moreMonkeys = patrollerFSM.CreatePerception<PushPerception>();
-        Perception noMoreMonkeys = patrollerFSM.CreatePerception<PushPerception>();
+        Perception receiveWarning = patrollerFSM.CreatePerception<PushPerception>();
 
         Perception distanceToMonkey = patrollerFSM.CreatePerception<ValuePerception>(NearToMonkey);
-        Perception resumePatrolling = patrollerFSM.CreatePerception<PushPerception>();
+        Perception isMonkeyJailed = patrollerFSM.CreatePerception<ValuePerception>(IsMonkeyJailed);
+
 
         //States
         State patrolling = patrollerFSM.CreateEntryState("patrolling", () => {
@@ -117,9 +133,9 @@ public class PatrollerFSM : MonoBehaviour
         patrollerFSM.CreateTransition("no monkey", checkDoor, noAngryMonkeys, patrolling);
 
         patrollerFSM.CreateTransition("jailing monkey", chaseMonkey, distanceToMonkey, jailMonkey);
-        patrollerFSM.CreateTransition("no more monkey", chaseMonkey, noMoreMonkeys, patrolling);
+        patrollerFSM.CreateTransition("no more monkey", chaseMonkey, noAngryMonkeys, patrolling);
 
-        patrollerFSM.CreateTransition("resume patrolling", jailMonkey, resumePatrolling, patrolling);
+        patrollerFSM.CreateTransition("more monkeys", jailMonkey, isMonkeyJailed, chaseMonkey);
     }
 
     void SelectAction()
@@ -181,22 +197,7 @@ public class PatrollerFSM : MonoBehaviour
 
     void CheckDoor()
     {
-        if (FlattenedDistance(transform.position, doorTransform.position) < nearDistance)
-        {
-            CheckForAMonkey();
-        }
-    }
-
-    void CheckForAMonkey()
-    {
-        if (angryMonkeys > 0)
-        {
-            patrollerFSM.Fire("chase monkey");
-        }
-        else
-        {
-            patrollerFSM.Fire("no monkey");
-        }
+        Debug.Log("Checking door");
     }
 
     void CalculateDistanceToMonkey(out float minDistance, out GorillaUS gorillaToChase)
@@ -223,8 +224,6 @@ public class PatrollerFSM : MonoBehaviour
 
         if (gorillaToChase != null)
             agent.SetDestination(gorillaToChase.transform.position);
-        else
-            patrollerFSM.Fire("no more monkey");
     }
 
     bool NearToMonkey()
@@ -233,9 +232,10 @@ public class PatrollerFSM : MonoBehaviour
 
         if (distance < nearDistance)
         {
-            gorillaToChase.transform.parent = transform;
+            gorillaToChase.TrapGorilla(transform);
+            //gorillaToChase.transform.parent = transform;
+            //gorillaToChase.isTrapped = true;
             trappedGorilla = gorillaToChase;
-            gorillaToChase.isTrapped = true;
             return true;
         }
         else
@@ -246,16 +246,7 @@ public class PatrollerFSM : MonoBehaviour
 
     void JailMonkey()
     {
-        if (trappedGorilla == null)
-        {
-            patrollerFSM.Fire("resume patrolling");
-        }
-
-        else if (FlattenedDistance(transform.position, jailTransform.position) < nearDistance)
-        {
-            trappedGorilla.transform.parent = null;
-            patrollerFSM.Fire("resume patrolling");
-        }
+        Debug.Log("Jailing monkey");
     }
 
     void AtAnyState()
@@ -264,6 +255,68 @@ public class PatrollerFSM : MonoBehaviour
         {
             patrollingIndex = (patrollingIndex + 1) % patrollingPoints.Length;
         }
+    }
+
+    void UpdateAngryGorillaCount()
+    {
+        angryMonkeys = 0;
+
+        foreach (var gorilla in FindObjectsOfType<GorillaUS>())
+        {
+            if (gorilla.isAngry && !gorilla.isTrapped)
+            {
+                angryMonkeys++;
+            }
+        }
+
+        if (trappedGorilla != null)
+        {
+            angryMonkeys++;
+        }
+    }
+
+    bool AngryGorillasLeft()
+    {
+        UpdateAngryGorillaCount();
+
+        if (myState == MyState.CheckDoor)
+        {
+            if (!(FlattenedDistance(transform.position, doorTransform.position) < nearDistance))
+            {
+                return false;
+            }
+        }
+
+        return angryMonkeys > 0;
+    }
+
+    bool NotAngryGorillasLeft()
+    {
+        UpdateAngryGorillaCount();
+
+        if (myState == MyState.CheckDoor)
+        {
+            if (!(FlattenedDistance(transform.position, doorTransform.position) < nearDistance))
+            {
+                return false;
+            }
+        }
+
+        return angryMonkeys <= 0;
+    }
+
+    bool IsMonkeyJailed()
+    {
+        if (trappedGorilla == null) return true;
+
+        if (FlattenedDistance(transform.position, jailTransform.position) < nearDistance)
+        {
+            trappedGorilla.ReleaseGorilla();
+            trappedGorilla = null;
+            return true;
+        }
+
+        return false;
     }
 
     public float FlattenedDistance(Vector3 a, Vector3 b)

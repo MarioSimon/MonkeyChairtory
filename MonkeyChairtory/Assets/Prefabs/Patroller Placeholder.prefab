@@ -151,8 +151,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1bc2b80b82f352749b416737bf945f41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  myState: 0
+  patrollingPoints: []
+  patrollingIndex: 0
+  currentDestination: {x: 0, y: 0, z: 0}
   minTimeToPee: 55
   maxTimeToPee: 65
   timeToPee: 0
+  peeingPoint: {fileID: 0}
+  minTimePeeing: 1.5
+  maxTimePeeing: 4
   doorTransform: {fileID: 0}
   angryMonkeys: 0
+  nearDistance: 1.25
+  jailTransform: {fileID: 0}
+  trappedGorilla: {fileID: 0}
