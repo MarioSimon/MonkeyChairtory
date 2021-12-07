@@ -6,6 +6,7 @@ public class GorillaUS : MonoBehaviour
 {
     public bool isAngry;
     public bool isTrapped;
+    public bool isJailed;
 
     // Start is called before the first frame update
     void Start()
@@ -17,5 +18,19 @@ public class GorillaUS : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public void TrapGorilla(Transform patroller)
+    {
+        transform.parent = patroller;
+        isTrapped = true;
+    }
+
+    public void ReleaseGorilla()
+    {
+        transform.parent = null;
+        isTrapped = false;
+        isAngry = false;
+        isJailed = true;
     }
 }
