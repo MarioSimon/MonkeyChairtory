@@ -137,8 +137,8 @@ MonoBehaviour:
   patrollingPoints: []
   patrollingIndex: 0
   currentDestination: {x: 0, y: 0, z: 0}
-  minTimeToPee: 180
-  maxTimeToPee: 300
+  minTimeToPee: 55
+  maxTimeToPee: 65
   timeToPee: 0
   peeingPoint: {fileID: 0}
   minTimePeeing: 1.5
