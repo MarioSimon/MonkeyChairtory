@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 650710312412749918}
   - component: {fileID: 650710312412749917}
   - component: {fileID: 650710312412749916}
+  - component: {fileID: 5810804652944377546}
+  - component: {fileID: 6125712758916039253}
   m_Layer: 0
   m_Name: Replenisher Placeholder
   m_TagString: Untagged
@@ -96,3 +98,51 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!195 &5810804652944377546
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 650710312412749915}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 1
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
+--- !u!114 &6125712758916039253
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 650710312412749915}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acb664f56f8268c4dbb4f13ddc9fe37e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myState: 0
+  nearDistance: 1.25
+  patrollingPoints: []
+  patrollingIndex: 0
+  currentDestination: {x: 0, y: 0, z: 0}
+  minTimeToPee: 180
+  maxTimeToPee: 300
+  timeToPee: 0
+  peeingPoint: {fileID: 0}
+  minTimePeeing: 1.5
+  maxTimePeeing: 4
+  bananaAmt: 0
+  minMonkeys: 4
+  monkey: {fileID: 5912138955547204452, guid: cb56c46443fa50144bf686e97fd1c898, type: 3}
