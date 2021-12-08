@@ -18,6 +18,10 @@ public class GorillaUS : MonoBehaviour
     public GameObject logObject;
     [SerializeField] private GameObject logMoved;
 
+    [Header("Moving logs config")]
+    public GameObject plankObject;
+    [SerializeField] private GameObject plankMoved;
+
     [Header("Treaty zone config")]
     [SerializeField] private bool isInTreatyZone;
 
@@ -54,14 +58,7 @@ public class GorillaUS : MonoBehaviour
     {
         gorillaCurves.Update();
 
-        string aux = "[";
-        foreach (var action in gorillaCurves.actions)
-        {
-            aux += action.getUtility() + "/ ";
-        }
-        aux += "]";
-
-        //Debug.Log(aux);
+        PrintUtilityValues();
 
         SelectAction();
 
@@ -123,10 +120,10 @@ public class GorillaUS : MonoBehaviour
         Factor timeWithoutEating = new LinearPartsCurve(leafTimeWithoutEating, hungerGraphPoints);
 
         gorillaCurves.CreateUtilityAction("logs to treaty", () => { gorillaState = GorillaState.MovingLogs; }, logsInTreatyZone);
-        gorillaCurves.CreateUtilityAction("planks to mounting", () => { Debug.Log("Moving planks..."); }, planksFromTreatingToMounting);
-        gorillaCurves.CreateUtilityAction("treating logs", () => { Debug.Log("Treating logs..."); }, monkeysInTreatyZoneNeed);
-        gorillaCurves.CreateUtilityAction("mounting chairs", () => { Debug.Log("Mounting chairs..."); }, monkeysInMountingZoneNeed);
-        gorillaCurves.CreateUtilityAction("go eating", () => { Debug.Log("Going to eat..."); }, timeWithoutEating);
+        gorillaCurves.CreateUtilityAction("planks to mounting", () => { gorillaState = GorillaState.MovingPlanks; }, planksFromTreatingToMounting);
+        gorillaCurves.CreateUtilityAction("treating logs", () => { gorillaState = GorillaState.TreatingLogs; }, monkeysInTreatyZoneNeed);
+        gorillaCurves.CreateUtilityAction("mounting chairs", () => { gorillaState = GorillaState.MountingChairs; }, monkeysInMountingZoneNeed);
+        gorillaCurves.CreateUtilityAction("go eating", () => { gorillaState = GorillaState.GoingToEat; }, timeWithoutEating);
     }
 
     void CreateBehaviourTree()
@@ -136,22 +133,34 @@ public class GorillaUS : MonoBehaviour
 
     void SelectAction()
     {
-        switch (gorillaState)
+        if (!isTrapped) //TODO fix this
         {
-            case GorillaState.MovingLogs:
-                MoveLogs();
-                break;
+
+            switch (gorillaState)
+            {
+                case GorillaState.MovingLogs:
+                    MoveLogs();
+                    break;
+                case GorillaState.MovingPlanks:
+                    MovePlanks();
+                    break;
+            }
+
         }
     }
 
     void MoveLogs()
     {
         Vector3 destination = Vector3.zero;
+        LogsPalletBehaviour selectedPallet = null;
 
         if (logMoved == null)
             destination = logsTransform.position;
-        else
-            destination = new Vector3(4, 0, -20);
+        else if(SelectLogPallet() != null)
+        {
+            selectedPallet = SelectLogPallet();
+            destination = SelectLogPallet().transform.position;
+        }
 
         agent.SetDestination(destination);
 
@@ -166,10 +175,59 @@ public class GorillaUS : MonoBehaviour
             else
             {
                 //TODO move log to palet
+                selectedPallet.IncludeLog(logMoved);
                 Destroy(logMoved);
             }
         }
 
+    }
+
+    void MovePlanks()
+    {
+
+    }
+
+    LogsPalletBehaviour SelectLogPallet()
+    {
+        var logsPallets = FindObjectsOfType<LogsPalletBehaviour>();
+
+        LogsPalletBehaviour selectedPallet = null;
+        int minimum = int.MaxValue;
+
+        var candidatePallets = new List<LogsPalletBehaviour>();
+
+        foreach (var pallet in logsPallets)
+        {
+            if (pallet.logsAmt < minimum)
+            {
+                candidatePallets.Clear();
+                minimum = pallet.logsAmt;
+                selectedPallet = pallet;
+                candidatePallets.Add(pallet);
+            }
+            if (pallet.logsAmt == minimum)
+            {
+                candidatePallets.Add(pallet);
+            }
+        }
+
+        if (candidatePallets.Count > 1)
+        {
+            float minDistance = float.MaxValue;
+
+            foreach (var pallet in candidatePallets)
+            {
+                float dist = FlattenedDistance(transform.position, pallet.transform.position);
+
+                if (dist < minDistance)
+                {
+                    minDistance = dist;
+                    selectedPallet = pallet;
+                }
+            }
+        }
+
+        return selectedPallet;
     }
 
     int MonkeysInTreatyZone()
@@ -203,13 +261,15 @@ public class GorillaUS : MonoBehaviour
     public void TrapGorilla(Transform patroller)
     {
         transform.parent = patroller;
-        isTrapped = true;
+        agent.isStopped = isTrapped = true;
+        agent.enabled = false;
     }
 
     public void ReleaseGorilla()
     {
         transform.parent = null;
-        isTrapped = false;
+        agent.enabled = true;
+        agent.isStopped = isTrapped = false;
         isAngry = false;
         isJailed = true;
     }
@@ -220,5 +280,19 @@ public class GorillaUS : MonoBehaviour
         b.y = 0;
 
         return Vector3.Distance(a, b);
+    }
+
+    void PrintUtilityValues()
+    {
+        string aux = "[ ";
+        foreach (var action in gorillaCurves.actions)
+        {
+            aux += action.getUtility().ToString("0.000", System.Globalization.CultureInfo.InvariantCulture) + " | ";
+        }
+        aux = aux.Remove(aux.LastIndexOf('|'));
+
+        aux += "]";
+
+        Debug.Log(aux);
     }
 }
