@@ -13,12 +13,22 @@ public class LogsPalletBehaviour : MonoBehaviour
     void Start()
     {
         logs = new List<GameObject>();
+
+        PresetLogsAmount(FindObjectOfType<GorillaUS>().logObject, 10);
     }
 
     // Update is called once per frame
     void Update()
     {
         
+    }
+
+    void PresetLogsAmount(GameObject log, int initialAmt)
+    {
+        for(int i = 0; i < initialAmt; i++)
+        {
+            IncludeLog(log);
+        }
     }
 
     public void IncludeLog(GameObject log)

@@ -784,11 +784,20 @@ MonoBehaviour:
   isJailed: 0
   gorillaState: 0
   nearDistance: 1.25
+  actionEnded: 0
   logsTransform: {fileID: 0}
   logObject: {fileID: 5728157171172634068, guid: 42e167742db22cb44ab39e979df5a569, type: 3}
   logMoved: {fileID: 0}
+  plankObject: {fileID: 45834286527845871, guid: da52cdd856396ae469121ad437a598dd, type: 3}
+  plankMoved: {fileID: 0}
   isInTreatyZone: 0
+  isTreatingALog: 0
+  logTreated: 0
+  chairObject: {fileID: 4614476765470983320, guid: 3810cdb25457ac441b1e3a01673c6650, type: 3}
   isInMountingZone: 0
+  isMountingAChair: 0
+  chairMounted: 0
+  chairMoved: {fileID: 0}
   minRandomHunger: 30
   maxRandomHunger: 40
   maxSelectedHunger: 0
