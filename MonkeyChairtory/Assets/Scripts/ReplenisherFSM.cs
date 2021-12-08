@@ -86,21 +86,21 @@ public class ReplenisherFSM : MonoBehaviour
 
         //States
         State patrolling = replenisherFSM.CreateEntryState("patrolling", () => {
-            Debug.Log("Patrolling...");
+            //Debug.Log("Patrolling...");
             myState = MyState.Patrolling;
         });
         State peeing = replenisherFSM.CreateState("peeing", () => {
-            Debug.Log("Need to pee!");
+            //Debug.Log("Need to pee!");
             myState = MyState.Peeing;
             agent.SetDestination(peeingPoint.position);
             currentDestination = peeingPoint.position;
         });
         State replenishingBananas = replenisherFSM.CreateState("replenishbananas", () => {
-            Debug.Log("Replenishing bananas");
+            //Debug.Log("Replenishing bananas");
             myState = MyState.ReplenishBananas;
         });
         State replenishingMonkeys = replenisherFSM.CreateState("replenishingmonkeys", () => {
-            Debug.Log("Replenishing monkey");
+            //Debug.Log("Replenishing monkey");
             myState = MyState.ReplenishMonkeys;
         });
 

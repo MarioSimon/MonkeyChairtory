@@ -98,26 +98,26 @@ public class PatrollerFSM : MonoBehaviour
 
         //States
         State patrolling = patrollerFSM.CreateEntryState("patrolling", () => {
-            Debug.Log("Patrolling...");
+            //Debug.Log("Patrolling...");
             myState = MyState.Patrolling;
         });
         State peeing = patrollerFSM.CreateState("peeing", () => {
-            Debug.Log("Need to pee!");
+            //Debug.Log("Need to pee!");
             myState = MyState.Peeing;
             agent.SetDestination(peeingPoint.position);
             currentDestination = peeingPoint.position;
         });
         State checkDoor = patrollerFSM.CreateState("checkdoor", () => {
-            Debug.Log("Checking door");
+            //Debug.Log("Checking door");
             myState = MyState.CheckDoor;
             agent.SetDestination(doorTransform.position);
         });
         State chaseMonkey = patrollerFSM.CreateState("chasemonkey", () => {
-            Debug.Log("Chasing monkey");
+            //Debug.Log("Chasing monkey");
             myState = MyState.ChaseMonkey;
         });
         State jailMonkey = patrollerFSM.CreateState("jailmonkey", () => {
-            Debug.Log("Jailing monkey");
+            //Debug.Log("Jailing monkey");
             myState = MyState.JailMonkey;
             agent.SetDestination(jailTransform.position);
         });
