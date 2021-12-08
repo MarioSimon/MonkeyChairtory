@@ -27,4 +27,14 @@ public class WorldManager : MonoBehaviour
     {
         
     }
+
+    public float PlanksInTreatyZoneRatio()
+    {
+        return planksInTreatyZone / (float)maxPlanksInTreatyZone;
+    }
+
+    public float PlanksInMountingZoneRatio()
+    {
+        return planksInMountingZone / (float)maxPlanksInMountingZone;
+    }
 }
