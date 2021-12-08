@@ -9,6 +9,15 @@ public class GorillaUS : MonoBehaviour
     public bool isTrapped;
     public bool isJailed;
 
+    private enum GorillaState { MovingLogs, TreatingLogs, MovingPlanks, MountingChairs, GoingToEat };
+    [SerializeField] private GorillaState gorillaState;
+    [SerializeField] private float nearDistance = 1.25f;
+
+    [Header("Moving logs config")]
+    public Transform logsTransform;
+    public GameObject logObject;
+    [SerializeField] private GameObject logMoved;
+
     [Header("Treaty zone config")]
     [SerializeField] private bool isInTreatyZone;
 
@@ -31,6 +40,8 @@ public class GorillaUS : MonoBehaviour
     {
         agent = GetComponent<NavMeshAgent>();
 
+        logsTransform = GameObject.Find("LogsPosition").transform;
+
         SetRandomHunger();
 
         gorillaCurves = new UtilitySystemEngine(1.0f);
@@ -44,15 +55,15 @@ public class GorillaUS : MonoBehaviour
         gorillaCurves.Update();
 
         string aux = "[";
-
         foreach (var action in gorillaCurves.actions)
         {
             aux += action.getUtility() + "/ ";
         }
-
         aux += "]";
 
-        Debug.Log(aux);
+        //Debug.Log(aux);
+
+        SelectAction();
 
         currentHunger += Time.deltaTime;
     }
@@ -111,7 +122,7 @@ public class GorillaUS : MonoBehaviour
 
         Factor timeWithoutEating = new LinearPartsCurve(leafTimeWithoutEating, hungerGraphPoints);
 
-        gorillaCurves.CreateUtilityAction("logs to treaty", () => { Debug.Log("Moving logs..."); }, logsInTreatyZone);
+        gorillaCurves.CreateUtilityAction("logs to treaty", () => { gorillaState = GorillaState.MovingLogs; }, logsInTreatyZone);
         gorillaCurves.CreateUtilityAction("planks to mounting", () => { Debug.Log("Moving planks..."); }, planksFromTreatingToMounting);
         gorillaCurves.CreateUtilityAction("treating logs", () => { Debug.Log("Treating logs..."); }, monkeysInTreatyZoneNeed);
         gorillaCurves.CreateUtilityAction("mounting chairs", () => { Debug.Log("Mounting chairs..."); }, monkeysInMountingZoneNeed);
@@ -120,6 +131,44 @@ public class GorillaUS : MonoBehaviour
 
     void CreateBehaviourTree()
     {
+
+    }
+
+    void SelectAction()
+    {
+        switch (gorillaState)
+        {
+            case GorillaState.MovingLogs:
+                MoveLogs();
+                break;
+        }
+    }
+
+    void MoveLogs()
+    {
+        Vector3 destination = Vector3.zero;
+
+        if (logMoved == null)
+            destination = logsTransform.position;
+        else
+            destination = new Vector3(4, 0, -20);
+
+        agent.SetDestination(destination);
+
+        if (FlattenedDistance(transform.position, destination) < nearDistance)
+        {
+            if (logMoved == null)
+            {
+                logMoved = Instantiate(logObject, transform.position + Vector3.up * 2, Quaternion.Euler(0, 0, 90)); ;
+                logMoved.transform.parent = transform;
+            }
+
+            else
+            {
+                //TODO move log to palet
+                Destroy(logMoved);
+            }
+        }
 
     }
 
@@ -163,5 +212,13 @@ public class GorillaUS : MonoBehaviour
         isTrapped = false;
         isAngry = false;
         isJailed = true;
+    }
+
+    float FlattenedDistance(Vector3 a, Vector3 b)
+    {
+        a.y = 0;
+        b.y = 0;
+
+        return Vector3.Distance(a, b);
     }
 }

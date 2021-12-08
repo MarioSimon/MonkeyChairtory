@@ -5,8 +5,8 @@ using UnityEngine.AI;
 
 public class PatrollerFSM : MonoBehaviour
 {
-    private enum MyState { Patrolling, Peeing, CheckDoor, ChaseMonkey, JailMonkey };
-    [SerializeField] private MyState myState;
+    private enum PatrollerState { Patrolling, Peeing, CheckDoor, ChaseMonkey, JailMonkey };
+    [SerializeField] private PatrollerState patrollerState;
     [SerializeField] private float nearDistance;
 
     [Header("Patrolling behaviour")]
@@ -38,7 +38,7 @@ public class PatrollerFSM : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        myState = MyState.Patrolling;
+        patrollerState = PatrollerState.Patrolling;
         agent = GetComponent<NavMeshAgent>();
 
         doorTransform = GameObject.Find("DoorPosition").transform;
@@ -99,26 +99,26 @@ public class PatrollerFSM : MonoBehaviour
         //States
         State patrolling = patrollerFSM.CreateEntryState("patrolling", () => {
             //Debug.Log("Patrolling...");
-            myState = MyState.Patrolling;
+            patrollerState = PatrollerState.Patrolling;
         });
         State peeing = patrollerFSM.CreateState("peeing", () => {
             //Debug.Log("Need to pee!");
-            myState = MyState.Peeing;
+            patrollerState = PatrollerState.Peeing;
             agent.SetDestination(peeingPoint.position);
             currentDestination = peeingPoint.position;
         });
         State checkDoor = patrollerFSM.CreateState("checkdoor", () => {
             //Debug.Log("Checking door");
-            myState = MyState.CheckDoor;
+            patrollerState = PatrollerState.CheckDoor;
             agent.SetDestination(doorTransform.position);
         });
         State chaseMonkey = patrollerFSM.CreateState("chasemonkey", () => {
             //Debug.Log("Chasing monkey");
-            myState = MyState.ChaseMonkey;
+            patrollerState = PatrollerState.ChaseMonkey;
         });
         State jailMonkey = patrollerFSM.CreateState("jailmonkey", () => {
             //Debug.Log("Jailing monkey");
-            myState = MyState.JailMonkey;
+            patrollerState = PatrollerState.JailMonkey;
             agent.SetDestination(jailTransform.position);
         });
 
@@ -142,21 +142,21 @@ public class PatrollerFSM : MonoBehaviour
     {
         AtAnyState();
 
-        switch (myState)
+        switch (patrollerState)
         {
-            case MyState.Patrolling:
+            case PatrollerState.Patrolling:
                 Patrolling();
                 break;
-            case MyState.Peeing:
+            case PatrollerState.Peeing:
                 Peeing();
                 break;
-            case MyState.CheckDoor:
+            case PatrollerState.CheckDoor:
                 CheckDoor();
                 break;
-            case MyState.ChaseMonkey:
+            case PatrollerState.ChaseMonkey:
                 ChaseMonkey();
                 break;
-            case MyState.JailMonkey:
+            case PatrollerState.JailMonkey:
                 JailMonkey();
                 break;
         }
@@ -279,7 +279,7 @@ public class PatrollerFSM : MonoBehaviour
     {
         UpdateAngryGorillaCount();
 
-        if (myState == MyState.CheckDoor)
+        if (patrollerState == PatrollerState.CheckDoor)
         {
             if (!(FlattenedDistance(transform.position, doorTransform.position) < nearDistance))
             {
@@ -294,7 +294,7 @@ public class PatrollerFSM : MonoBehaviour
     {
         UpdateAngryGorillaCount();
 
-        if (myState == MyState.CheckDoor)
+        if (patrollerState == PatrollerState.CheckDoor)
         {
             if (!(FlattenedDistance(transform.position, doorTransform.position) < nearDistance))
             {

@@ -665,6 +665,7 @@ GameObject:
   - component: {fileID: 7334891983285272450}
   - component: {fileID: 7079795059501904220}
   - component: {fileID: 7079795059501904221}
+  - component: {fileID: 9134350300342193737}
   - component: {fileID: 7079795059501904211}
   m_Layer: 0
   m_Name: Gorilla
@@ -744,6 +745,28 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!195 &9134350300342193737
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7962669569253074232}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!114 &7079795059501904211
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -759,6 +782,17 @@ MonoBehaviour:
   isAngry: 1
   isTrapped: 0
   isJailed: 0
+  gorillaState: 0
+  nearDistance: 1.25
+  logsTransform: {fileID: 0}
+  logObject: {fileID: 5728157171172634068, guid: 42e167742db22cb44ab39e979df5a569, type: 3}
+  logMoved: {fileID: 0}
+  isInTreatyZone: 0
+  isInMountingZone: 0
+  minRandomHunger: 30
+  maxRandomHunger: 40
+  maxSelectedHunger: 0
+  currentHunger: 0
 --- !u!1 &8762758409773873561
 GameObject:
   m_ObjectHideFlags: 0
