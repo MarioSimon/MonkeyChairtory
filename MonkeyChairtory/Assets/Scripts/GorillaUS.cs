@@ -675,7 +675,7 @@ public class GorillaUS : MonoBehaviour
     {
         var world = FindObjectOfType<WorldManager>();
 
-        var monkeyMountingNeed = (MonkeysInMountingZone() + world.PlanksInMountingZoneRatio()) / 2.0f;
+        var monkeyMountingNeed = (MonkeysInMountingZone() + (1 - world.PlanksInMountingZoneRatio())) / 2.0f;
 
         return monkeyMountingNeed;
     }
