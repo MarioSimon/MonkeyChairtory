@@ -6,7 +6,7 @@ public class WorldManager : MonoBehaviour
 {
     [Header("Logs config")]
     public int logsInTreatyZone = 0;
-    public int maxLogsInTreatyZone = 50;
+    public int maxLogsInTreatyZone = 60;
 
     [Header("Planks treaty config")]
     public int planksInTreatyZone = 0;
