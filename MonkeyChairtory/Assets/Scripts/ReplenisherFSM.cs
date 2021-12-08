@@ -5,8 +5,8 @@ using UnityEngine.AI;
 
 public class ReplenisherFSM : MonoBehaviour
 {
-    private enum MyState { Patrolling, Peeing, ReplenishBananas, ReplenishMonkeys };
-    [SerializeField] private MyState myState;
+    private enum ReplenisherState { Patrolling, Peeing, ReplenishBananas, ReplenishMonkeys };
+    [SerializeField] private ReplenisherState myState;
     [SerializeField] private float nearDistance;
 
     [Header("Patrolling behaviour")]
@@ -35,7 +35,7 @@ public class ReplenisherFSM : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        myState = MyState.Patrolling;
+        myState = ReplenisherState.Patrolling;
         agent = GetComponent<NavMeshAgent>();
 
         peeingPoint = GameObject.Find("PeeingPoint").transform;
@@ -87,21 +87,21 @@ public class ReplenisherFSM : MonoBehaviour
         //States
         State patrolling = replenisherFSM.CreateEntryState("patrolling", () => {
             //Debug.Log("Patrolling...");
-            myState = MyState.Patrolling;
+            myState = ReplenisherState.Patrolling;
         });
         State peeing = replenisherFSM.CreateState("peeing", () => {
             //Debug.Log("Need to pee!");
-            myState = MyState.Peeing;
+            myState = ReplenisherState.Peeing;
             agent.SetDestination(peeingPoint.position);
             currentDestination = peeingPoint.position;
         });
         State replenishingBananas = replenisherFSM.CreateState("replenishbananas", () => {
             //Debug.Log("Replenishing bananas");
-            myState = MyState.ReplenishBananas;
+            myState = ReplenisherState.ReplenishBananas;
         });
         State replenishingMonkeys = replenisherFSM.CreateState("replenishingmonkeys", () => {
             //Debug.Log("Replenishing monkey");
-            myState = MyState.ReplenishMonkeys;
+            myState = ReplenisherState.ReplenishMonkeys;
         });
 
 
@@ -123,16 +123,16 @@ public class ReplenisherFSM : MonoBehaviour
 
         switch (myState)
         {
-            case MyState.Patrolling:
+            case ReplenisherState.Patrolling:
                 Patrolling();
                 break;
-            case MyState.Peeing:
+            case ReplenisherState.Peeing:
                 Peeing();
                 break;
-            case MyState.ReplenishBananas:
+            case ReplenisherState.ReplenishBananas:
                 ReplenishBananas();
                 break;
-            case MyState.ReplenishMonkeys:
+            case ReplenisherState.ReplenishMonkeys:
                 ReplenishMonkeys();
                 break;
         }
