@@ -669,7 +669,7 @@ GameObject:
   - component: {fileID: 7079795059501904211}
   m_Layer: 0
   m_Name: Not-Gorilla
-  m_TagString: Untagged
+  m_TagString: gorilla
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -787,6 +787,8 @@ MonoBehaviour:
   logsTransform: {fileID: 0}
   logObject: {fileID: 5728157171172634068, guid: 42e167742db22cb44ab39e979df5a569, type: 3}
   logMoved: {fileID: 0}
+  plankObject: {fileID: 0}
+  plankMoved: {fileID: 0}
   isInTreatyZone: 0
   isInMountingZone: 0
   minRandomHunger: 30

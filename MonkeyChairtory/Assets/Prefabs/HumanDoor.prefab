@@ -11,7 +11,9 @@ GameObject:
   - component: {fileID: 4231345846097847681}
   - component: {fileID: 943250364939086372}
   - component: {fileID: 3095079587196133102}
-  - component: {fileID: 1015045664133216791}
+  - component: {fileID: 3438513965400187889}
+  - component: {fileID: 4944203041142851131}
+  - component: {fileID: 6631275400731161650}
   m_Layer: 0
   m_Name: HumanDoor
   m_TagString: Untagged
@@ -28,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 3599240371102351163}
   m_LocalRotation: {x: 0.70710695, y: -7.108712e-15, z: 0.70710665, w: 7.1087155e-15}
   m_LocalPosition: {x: 21.590593, y: 2.2499995, z: 10.5695095}
-  m_LocalScale: {x: 100, y: 125, z: 10}
+  m_LocalScale: {x: 10, y: 125, z: 100}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -82,7 +84,23 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &1015045664133216791
+--- !u!54 &3438513965400187889
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3599240371102351163}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!65 &4944203041142851131
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -90,8 +108,20 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3599240371102351163}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.02, y: 0.020000022, z: 0.17514363}
-  m_Center: {x: 0, y: -4.4128605e-26, z: -0.0057185143}
+  m_Size: {x: 0.13753681, y: 0.006778027, z: 0.011874747}
+  m_Center: {x: -0.0004994035, y: -0.0017854099, z: 0.011090821}
+--- !u!114 &6631275400731161650
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3599240371102351163}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86de35519f88e7b4ba5f4ad5b67b41f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
