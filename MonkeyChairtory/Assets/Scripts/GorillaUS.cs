@@ -797,6 +797,6 @@ public class GorillaUS : MonoBehaviour
 
         aux += "]";
 
-        Debug.Log(aux);
+        //Debug.Log(aux);
     }
 }
