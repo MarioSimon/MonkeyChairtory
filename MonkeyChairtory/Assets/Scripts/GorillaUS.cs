@@ -9,7 +9,7 @@ public class GorillaUS : MonoBehaviour
     public bool isTrapped;
     public bool isJailed;
 
-    private enum GorillaState { MovingLogs, TreatingLogs, MovingPlanks, MountingChairs, GoingToEat };
+    private enum GorillaState { MovingLogs, TreatingLogs, MovingPlanks, MountingChairs, GoingToEat, StillAngry };
     [SerializeField] private GorillaState gorillaState;
     [SerializeField] private float nearDistance = 1.25f;
     [SerializeField] public bool actionEnded;
@@ -57,7 +57,9 @@ public class GorillaUS : MonoBehaviour
         SetRandomHunger();
 
         gorillaCurves = new UtilitySystemEngine();
-        hungerBehaviour = new BehaviourTreeEngine();
+        hungerBehaviour = new BehaviourTreeEngine(BehaviourEngine.IsASubmachine);
+
+        CreateBehaviourTree();
         CreateUtilityCurves();
     }
 
@@ -68,6 +70,8 @@ public class GorillaUS : MonoBehaviour
         {
             actionEnded = false;
             gorillaCurves.Update();
+            //if (gorillaCurves.ActiveAction.utilityState.Name == "go eating") gorillaState = GorillaState.GoingToEat;
+            hungerBehaviour.Update();
         }
 
         PrintUtilityValues();
@@ -75,7 +79,7 @@ public class GorillaUS : MonoBehaviour
         SelectAction();
 
         //TODO make hunger more realistic
-        //currentHunger += Time.deltaTime;
+        currentHunger += Time.deltaTime;
     }
 
     void SetRandomHunger()
@@ -138,19 +142,37 @@ public class GorillaUS : MonoBehaviour
         gorillaCurves.CreateUtilityAction("mounting chairs", () => { 
             gorillaState = GorillaState.MountingChairs; 
         }, monkeysInMountingZoneNeed);
-        gorillaCurves.CreateUtilityAction("go eating", () => { 
-            gorillaState = GorillaState.GoingToEat; 
-        }, timeWithoutEating);
+        gorillaCurves.CreateSubBehaviour("go eating", timeWithoutEating, hungerBehaviour);
+
+        
     }
 
     void CreateBehaviourTree()
     {
+        LeafNode moveToRestAreaNode = hungerBehaviour.CreateLeafNode("move to rest area", MoveToRestArea, IsInRestArea); ;
+        LeafNode areBananasLeft = hungerBehaviour.CreateLeafNode("are bananas left", () => { }, AreBananasLeft);
+        LeafNode eatingBananas = hungerBehaviour.CreateLeafNode("eating bananas", EatBanana, () => ReturnValues.Succeed);
+        SequenceNode areBananasAndEat = hungerBehaviour.CreateSequenceNode("are bananas and eat", false);
+        areBananasAndEat.AddChild(areBananasLeft);
+        areBananasAndEat.AddChild(eatingBananas);
+        LeafNode gettingAngry = hungerBehaviour.CreateLeafNode("getting angry", GetAngry, () => ReturnValues.Succeed);
+        SelectorNode eatingOrGettingAngry = hungerBehaviour.CreateSelectorNode("eating or angry");
+        eatingOrGettingAngry.AddChild(areBananasAndEat);
+        eatingOrGettingAngry.AddChild(gettingAngry);
+        SequenceNode rootNode = hungerBehaviour.CreateSequenceNode("root node", false);
+        rootNode.AddChild(moveToRestAreaNode);
+        rootNode.AddChild(eatingOrGettingAngry);
 
+        Perception exitPerception = hungerBehaviour.CreatePerception<PushPerception>();
+
+        hungerBehaviour.CreateExitTransition("Exit_Transition", moveToRestAreaNode.StateNode, exitPerception, gorillaCurves);
+
+        hungerBehaviour.SetRootNode(rootNode);
     }
 
     void SelectAction()
     {
-        if (!isTrapped) //TODO fix this
+        if (!isAngry)
         {
             switch (gorillaState)
             {
@@ -169,8 +191,10 @@ public class GorillaUS : MonoBehaviour
                 case GorillaState.GoingToEat:
                     GoToEat();
                     break;
+                case GorillaState.StillAngry:
+                    CalmDown();
+                    break;
             }
-
         }
     }
 
@@ -395,6 +419,11 @@ public class GorillaUS : MonoBehaviour
     {
         Debug.Log("Going to eat");
         actionEnded = true;
+    }
+
+    void CalmDown()
+    {
+        StartCoroutine(CalmingDown());
     }
 
     LogsPalletBehaviour SelectLogPallet(bool getMinimum = true)
@@ -634,6 +663,15 @@ public class GorillaUS : MonoBehaviour
         return closestTable;
     }
 
+    IEnumerator CalmingDown()
+    {
+        yield return new WaitForSeconds(5.0f);
+
+        currentHunger = 0;
+        isJailed = false;
+        actionEnded = true;
+    }
+
     float MonkeysInTreatyZone()
     {
         int monkeyAmt = 0;
@@ -680,6 +718,44 @@ public class GorillaUS : MonoBehaviour
         return monkeyMountingNeed;
     }
 
+
+    void MoveToRestArea()
+    {
+        gorillaState = GorillaState.GoingToEat;
+        agent.SetDestination(new Vector3(21, 1.75f, 2));
+    }
+
+    ReturnValues IsInRestArea()
+    {
+        if (FlattenedDistance(transform.position, new Vector3(21, 1.75f, 2)) < nearDistance)
+        {
+            return ReturnValues.Succeed;
+        }
+        else return ReturnValues.Running;
+    }
+
+    ReturnValues AreBananasLeft()
+    {
+        return FindObjectOfType<WorldManager>().bananasAmt > 0 ? ReturnValues.Succeed : ReturnValues.Failed;
+    }
+
+    void EatBanana()
+    {
+        Debug.Log("Eat a banana...");
+        currentHunger = 0;
+        FindObjectOfType<WorldManager>().bananasAmt--;
+        actionEnded = true;
+    }
+
+    void GetAngry()
+    {
+        Debug.LogError("Getting angry!");
+        gorillaState = GorillaState.StillAngry;
+        isAngry = true;
+        agent.SetDestination(GameObject.Find("PeeingPoint").transform.position);
+    }
+
+
     public void TrapGorilla(Transform patroller)
     {
         transform.parent = patroller;
@@ -694,6 +770,7 @@ public class GorillaUS : MonoBehaviour
         agent.isStopped = isTrapped = false;
         isAngry = false;
         isJailed = true;
+        currentHunger = 0;
     }
 
     float FlattenedDistance(Vector3 a, Vector3 b)

@@ -16,6 +16,9 @@ public class WorldManager : MonoBehaviour
     public int planksInMountingZone = 0;
     public int maxPlanksInMountingZone = 400;
 
+    [Header("Bananas config")]
+    public int bananasAmt = 2;
+
     // Start is called before the first frame update
     void Start()
     {
