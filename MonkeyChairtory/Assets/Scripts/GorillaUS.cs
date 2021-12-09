@@ -41,6 +41,9 @@ public class GorillaUS : MonoBehaviour
     [SerializeField] private float maxSelectedHunger = 0;
     [SerializeField] private float currentHunger = 0;
 
+    public Transform escapingPoint;
+    public Transform despawnPoint;
+
 
     private UtilitySystemEngine gorillaCurves;
     private BehaviourTreeEngine hungerBehaviour;
@@ -59,6 +62,8 @@ public class GorillaUS : MonoBehaviour
 
         nearDistance = 3;
         logsTransform = GameObject.Find("LogsPosition").transform;
+        escapingPoint = GameObject.Find("EscapingPoint").transform;
+        despawnPoint = GameObject.Find("DespawnPoint").transform;
 
         SetRandomHunger();
 
@@ -81,7 +86,7 @@ public class GorillaUS : MonoBehaviour
             hungerBehaviour.Update();
         }
         
-        PrintUtilityValues();
+        //PrintUtilityValues();
 
         //TODO make hunger more realistic
         UpdateHungerValue();
@@ -204,6 +209,10 @@ public class GorillaUS : MonoBehaviour
                     CalmDown();
                     break;
             }
+        }
+        else
+        {
+            TryToEscape();
         }
     }
 
@@ -414,6 +423,27 @@ public class GorillaUS : MonoBehaviour
     void CalmDown()
     {
         StartCoroutine(CalmingDown());
+    }
+
+    void TryToEscape()
+    {
+        if(IsNearEnough(currentDestination, nearDistance))
+        {
+            StartCoroutine(FightAgainstTheDoor());
+        }
+
+        if (IsNearEnough(despawnPoint.position, nearDistance))
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    IEnumerator FightAgainstTheDoor()
+    {
+        yield return new WaitForSeconds(5.0f);
+
+        agent.SetDestination(despawnPoint.position);
+        currentDestination = despawnPoint.position;
     }
 
     LogsPalletBehaviour SelectLogPallet(bool getMinimum = true)
@@ -755,7 +785,8 @@ public class GorillaUS : MonoBehaviour
         Debug.LogError("Getting angry!");
         gorillaState = GorillaState.StillAngry;
         isAngry = true;
-        agent.SetDestination(GameObject.Find("PeeingPoint").transform.position);
+        agent.SetDestination(escapingPoint.position);
+        currentDestination = escapingPoint.position;
     }
 
 
