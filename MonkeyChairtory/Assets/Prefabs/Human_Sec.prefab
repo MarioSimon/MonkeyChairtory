@@ -111,7 +111,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   patrollerState: 0
-  nearDistance: 1.25
+  nearDistance: 2
   patrollingPoints: []
   patrollingIndex: 0
   currentDestination: {x: 0, y: 0, z: 0}
