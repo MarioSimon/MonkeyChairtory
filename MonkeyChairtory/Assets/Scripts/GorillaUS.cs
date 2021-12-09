@@ -47,6 +47,7 @@ public class GorillaUS : MonoBehaviour
     private NavMeshAgent agent;
 
     private Animator gorillaAnim;
+    private Vector3 destination;
 
     // Start is called before the first frame update
     void Start()
@@ -74,7 +75,6 @@ public class GorillaUS : MonoBehaviour
         {
             actionEnded = false;
             gorillaCurves.Update();
-            //if (gorillaCurves.ActiveAction.utilityState.Name == "go eating") gorillaState = GorillaState.GoingToEat;
             hungerBehaviour.Update();
         }
 
@@ -89,8 +89,6 @@ public class GorillaUS : MonoBehaviour
     void SetRandomHunger()
     {
         maxSelectedHunger = UnityEngine.Random.Range(minRandomHunger, maxRandomHunger);
-
-        //maxSelectedHunger = 40;
     }
 
     void UpdateHungerValue()
@@ -116,7 +114,6 @@ public class GorillaUS : MonoBehaviour
 
         Factor leafMonkeysInTreatyZone = new LeafVariable(MonkeysInTreatyNeed, 1, 0);
         Factor leafMonkeysInMountingZone = new LeafVariable(MonkeysInMountingNeed, 1, 0);
-        //Factor leafMonkeysInMountingZone = new LeafVariable(() => 0, 1, 0);
 
         List<Point2D> monkeyPoints = new List<Point2D>();
         monkeyPoints.Add(new Point2D(0, 1));
@@ -209,7 +206,6 @@ public class GorillaUS : MonoBehaviour
 
     void MoveLogs()
     {
-        Vector3 destination = Vector3.zero;
         LogsPalletBehaviour selectedPallet = null;
 
         if (logMoved == null)
@@ -222,18 +218,16 @@ public class GorillaUS : MonoBehaviour
 
         agent.SetDestination(destination);
 
-        if (FlattenedDistance(transform.position, destination) < nearDistance)
+        if (IsNearEnough(destination, nearDistance))
         {
             if (logMoved == null)
             {
-                logMoved = Instantiate(logObject, transform.position + Vector3.up * 2, Quaternion.Euler(0, 0, 90));
-                logMoved.transform.parent = transform;
+                PickALog();
             }
 
             else
             {
-                selectedPallet.IncludeLog(logMoved);
-                Destroy(logMoved);
+                ReleaseALog(selectedPallet);
                 actionEnded = true;
             }
         }
@@ -242,7 +236,6 @@ public class GorillaUS : MonoBehaviour
 
     void TreateLogs()
     {
-        Vector3 destination = Vector3.zero;
         LogsPalletBehaviour logsPallet = null;
         LogToPlankTableBehaviour logToPlankTable = null;
         PlanksPalletBehaviour planksPallet = null;
@@ -274,13 +267,11 @@ public class GorillaUS : MonoBehaviour
 
         agent.SetDestination(destination);
 
-        if (FlattenedDistance(transform.position, destination) < nearDistance)
+        if (IsNearEnough(destination, nearDistance))
         {
             if (logsPallet != null)
             {
-                logsPallet.RemoveLog();
-                logMoved = Instantiate(logObject, transform.position + Vector3.up * 2, Quaternion.Euler(0, 0, 90));
-                logMoved.transform.parent = transform;
+                PickALog(logsPallet);
             }
             else if (logToPlankTable != null)
             {
@@ -295,15 +286,12 @@ public class GorillaUS : MonoBehaviour
                 }
                 if (logTreated && logMoved != null)
                 {
-                    Destroy(logMoved);
-                    plankMoved = Instantiate(plankObject, transform.position + Vector3.up * 2, Quaternion.Euler(0, 0, 90));
-                    plankMoved.transform.parent = transform;
+                    MakePlankFromLog();
                     isTreatingALog = false;
                 }
                 if (planksPallet != null && plankMoved != null)
                 {
-                    planksPallet.IncludePlank(plankMoved);
-                    Destroy(plankMoved);
+                    ReleaseAPlank(planksPallet);
                     isInTreatyZone = false;
                     isTreatingALog = false;
                     logTreated = false;
@@ -315,8 +303,6 @@ public class GorillaUS : MonoBehaviour
 
     void MovePlanks()
     {
-        Vector3 destination = Vector3.zero;
-
         PlanksPalletBehaviour startPlanksPallet = null;
         PlanksPalletBehaviour endPlanksPallet = null;
 
@@ -333,18 +319,15 @@ public class GorillaUS : MonoBehaviour
 
         agent.SetDestination(destination);
 
-        if (FlattenedDistance(transform.position, destination) < nearDistance)
+        if (IsNearEnough(destination, nearDistance))
         {
             if (startPlanksPallet != null)
             {
-                startPlanksPallet.RemovePlank();
-                plankMoved = Instantiate(plankObject, transform.position + Vector3.up * 2, Quaternion.Euler(0, 0, 90));
-                plankMoved.transform.parent = transform;
+                PickAPlank(startPlanksPallet);
             }
             if (endPlanksPallet != null)
             {
-                endPlanksPallet.IncludePlank(plankMoved);
-                Destroy(plankMoved);
+                ReleaseAPlank(endPlanksPallet);
                 actionEnded = true;
             }
         }
@@ -352,7 +335,6 @@ public class GorillaUS : MonoBehaviour
 
     void MountChairs()
     {
-        Vector3 destination = Vector3.zero;
         PlanksPalletBehaviour planksPallet = null;
         PlankToChairTableBehaviour plankToChairTable = null;
 
@@ -385,13 +367,11 @@ public class GorillaUS : MonoBehaviour
 
         agent.SetDestination(destination);
 
-        if (FlattenedDistance(transform.position, destination) < nearDistance)
+        if (IsNearEnough(destination, nearDistance))
         {
             if (planksPallet != null)
             {
-                planksPallet.RemovePlank();
-                plankMoved = Instantiate(plankObject, transform.position + Vector3.up * 2, Quaternion.Euler(0, 0, 90));
-                plankMoved.transform.parent = transform;
+                PickAPlank(planksPallet);
             }
             else if (plankToChairTable != null)
             {
@@ -406,14 +386,11 @@ public class GorillaUS : MonoBehaviour
                 }
                 if (chairMounted && plankMoved != null)
                 {
-                    Destroy(plankMoved);
-                    chairMoved = Instantiate(chairObject, transform.position + Vector3.up * 2, Quaternion.identity);
-                    chairMoved.transform.parent = transform;
+                    MakeChairFromPlank();
                     isMountingAChair = false;
                 }
                 if (destination == logsTransform.position && chairMoved != null)
                 {
-                    //planksPallet.IncludePlank(plankMoved);
                     Destroy(chairMoved);
                     isInMountingZone = false;
                     isMountingAChair = false;
@@ -754,17 +731,14 @@ public class GorillaUS : MonoBehaviour
 
     void EatBanana()
     {
-
-        //gorillaAnim.SetTrigger("EatTrigger");
         StartCoroutine(Eating());
         Debug.Log("Eat a banana...");
-        
     }
 
     IEnumerator Eating()
     {
         gorillaAnim.SetTrigger("EatTrigger");
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(2.5f);
         currentHunger = 0;
         FindObjectOfType<WorldManager>().bananasAmt--;
         actionEnded = true;
@@ -797,12 +771,58 @@ public class GorillaUS : MonoBehaviour
         currentHunger = 0;
     }
 
+    bool IsNearEnough(Vector3 destination, float nearDistance)
+    {
+        return FlattenedDistance(transform.position, destination) < nearDistance;
+    }
+
     float FlattenedDistance(Vector3 a, Vector3 b)
     {
         a.y = 0;
         b.y = 0;
 
         return Vector3.Distance(a, b);
+    }
+
+    void PickALog(LogsPalletBehaviour pallet = null)
+    {
+        if (pallet != null)
+            pallet.RemoveLog();
+        logMoved = Instantiate(logObject, transform.position + Vector3.up * 2, Quaternion.Euler(0, 0, 90));
+        logMoved.transform.parent = transform;
+    }
+
+    void ReleaseALog(LogsPalletBehaviour pallet)
+    {
+        pallet.IncludeLog(logMoved);
+        Destroy(logMoved);
+    }
+
+    void MakePlankFromLog()
+    {
+        Destroy(logMoved);
+        plankMoved = Instantiate(plankObject, transform.position + Vector3.up * 2, Quaternion.Euler(0, 0, 90));
+        plankMoved.transform.parent = transform;
+    }
+
+    void PickAPlank(PlanksPalletBehaviour pallet)
+    {
+        pallet.RemovePlank();
+        plankMoved = Instantiate(plankObject, transform.position + Vector3.up * 2, Quaternion.Euler(0, 0, 0));
+        plankMoved.transform.parent = transform;
+    }
+
+    void ReleaseAPlank(PlanksPalletBehaviour pallet)
+    {
+        pallet.IncludePlank(plankMoved);
+        Destroy(plankMoved);
+    }
+
+    void MakeChairFromPlank()
+    {
+        Destroy(plankMoved);
+        chairMoved = Instantiate(chairObject, transform.position + Vector3.up * 2, Quaternion.identity);
+        chairMoved.transform.parent = transform;
     }
 
     void PrintUtilityValues()
