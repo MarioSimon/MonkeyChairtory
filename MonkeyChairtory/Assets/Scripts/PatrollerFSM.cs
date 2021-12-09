@@ -7,7 +7,7 @@ public class PatrollerFSM : MonoBehaviour
 {
     private enum PatrollerState { Patrolling, Peeing, CheckDoor, ChaseMonkey, JailMonkey };
     [SerializeField] private PatrollerState patrollerState;
-    [SerializeField] private float nearDistance;
+    [SerializeField] private float nearDistance = 2;
 
     [Header("Patrolling behaviour")]
     public Transform[] patrollingPoints;
@@ -15,8 +15,8 @@ public class PatrollerFSM : MonoBehaviour
     [SerializeField] private Vector3 currentDestination;
 
     [Header("Peeing behaviour")]
-    public float minTimeToPee = 180;
-    public float maxTimeToPee = 300;
+    public float minTimeToPee = 55;
+    public float maxTimeToPee = 65;
     [SerializeField] private float timeToPee;
     public Transform peeingPoint;
     public float minTimePeeing = 1.5f;
