@@ -23,7 +23,7 @@ public class ReplenisherFSM : MonoBehaviour
     public float maxTimePeeing = 4f;
 
     [Header("Replenishing bananas behaviour")]
-    public int maxBananasHeld = 4;
+    public int maxBananasHeld = 3;
     [SerializeField] private int bananasHeld = 0;
     public Transform bananaStorage;
     public Transform bananaPosition;

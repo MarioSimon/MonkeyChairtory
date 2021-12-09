@@ -39,7 +39,7 @@ public class DoorBhaviour : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!open && other.tag == "Human" && this.tag != "BackDoor")
+        if (!open && this.tag != "BackDoor")
         {
             transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y + 90, transform.rotation.eulerAngles.z);
             open = true;
