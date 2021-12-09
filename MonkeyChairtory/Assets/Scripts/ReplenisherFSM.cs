@@ -27,6 +27,8 @@ public class ReplenisherFSM : MonoBehaviour
     [SerializeField] private int bananasHeld = 0;
     public Transform bananaStorage;
     public Transform bananaPosition;
+    [SerializeField] private GameObject bananaMoved;
+    public GameObject bananaObject;
 
     [Header("Replenishing monkeys behaviour")]
     public int minMonkeys = 4;
@@ -190,6 +192,9 @@ public class ReplenisherFSM : MonoBehaviour
                 bananasHeld = maxBananasHeld;
                 agent.SetDestination(bananaPosition.position);
                 currentDestination = bananaPosition.position;
+
+                bananaMoved = Instantiate(bananaObject, transform.position + new Vector3(1,-1,0), Quaternion.Euler(0, 0, 0));
+                bananaMoved.transform.parent = transform;
             }
             else
             {
@@ -202,6 +207,10 @@ public class ReplenisherFSM : MonoBehaviour
                 {
                     agent.SetDestination(bananaStorage.position);
                     currentDestination = bananaStorage.position;
+                }
+                if (bananaMoved != null)
+                {
+                    Destroy(bananaMoved);
                 }
             }
         }
