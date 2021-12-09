@@ -764,7 +764,7 @@ public class GorillaUS : MonoBehaviour
     IEnumerator Eating()
     {
         gorillaAnim.SetTrigger("EatTrigger");
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(3f);
         currentHunger = 0;
         FindObjectOfType<WorldManager>().bananasAmt--;
         actionEnded = true;
