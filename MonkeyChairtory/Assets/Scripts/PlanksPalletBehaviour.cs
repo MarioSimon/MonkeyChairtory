@@ -17,7 +17,9 @@ public class PlanksPalletBehaviour : MonoBehaviour
         planks = new List<GameObject>();
 
         if(isFromTreatyZone)
-            PresetPlanksAmount(FindObjectOfType<GorillaUS>().plankObject, 20);
+            PresetPlanksAmount(FindObjectOfType<GorillaUS>().plankObject, FindObjectOfType<WorldManager>().planksInTreatyZone);
+        else
+            PresetPlanksAmount(FindObjectOfType<GorillaUS>().plankObject, FindObjectOfType<WorldManager>().planksInMountingZone);
     }
 
     // Update is called once per frame

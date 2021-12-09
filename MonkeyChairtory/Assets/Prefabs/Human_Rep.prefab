@@ -121,8 +121,12 @@ MonoBehaviour:
   peeingPoint: {fileID: 0}
   minTimePeeing: 1.5
   maxTimePeeing: 4
-  bananaAmt: 0
+  maxBananasHeld: 4
+  bananasHeld: 0
+  bananaStorage: {fileID: 0}
   bananaPosition: {fileID: 0}
+  bananaMoved: {fileID: 0}
+  bananaObject: {fileID: 3139076033296989087, guid: 5814d88a0f99ebd41bf36f0e1cbf3aa7, type: 3}
   minMonkeys: 4
   monkey: {fileID: 5912138955547204452, guid: cb56c46443fa50144bf686e97fd1c898, type: 3}
 --- !u!195 &6782110221323133850

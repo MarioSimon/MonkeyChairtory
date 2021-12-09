@@ -14,7 +14,7 @@ public class LogsPalletBehaviour : MonoBehaviour
     {
         logs = new List<GameObject>();
 
-        PresetLogsAmount(FindObjectOfType<GorillaUS>().logObject, 10);
+        PresetLogsAmount(FindObjectOfType<GorillaUS>().logObject, FindObjectOfType<WorldManager>().logsInTreatyZone);
     }
 
     // Update is called once per frame
