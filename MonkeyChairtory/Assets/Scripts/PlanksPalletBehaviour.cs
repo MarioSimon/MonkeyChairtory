@@ -16,7 +16,7 @@ public class PlanksPalletBehaviour : MonoBehaviour
     {
         planks = new List<GameObject>();
 
-        //if(isFromTreatyZone)
+        if(isFromTreatyZone)
             PresetPlanksAmount(FindObjectOfType<GorillaUS>().plankObject, 20);
     }
 

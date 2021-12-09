@@ -779,7 +779,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff9a83957ceb5ab4d9974fde5f3d32ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isAngry: 1
+  isAngry: 0
   isTrapped: 0
   isJailed: 0
   gorillaState: 0
@@ -794,10 +794,10 @@ MonoBehaviour:
   isTreatingALog: 0
   logTreated: 0
   chairObject: {fileID: 4614476765470983320, guid: 3810cdb25457ac441b1e3a01673c6650, type: 3}
+  chairMoved: {fileID: 0}
   isInMountingZone: 0
   isMountingAChair: 0
   chairMounted: 0
-  chairMoved: {fileID: 0}
   minRandomHunger: 30
   maxRandomHunger: 40
   maxSelectedHunger: 0
