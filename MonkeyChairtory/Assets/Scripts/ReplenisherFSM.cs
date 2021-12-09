@@ -69,12 +69,12 @@ public class ReplenisherFSM : MonoBehaviour
 
     void SetPatrollingPoints()
     {
-        var patrollingParent = GameObject.Find("PatrollingPoints");
+        var patrollingParent = GameObject.Find("ReplenishingPoints");
 
         List<Transform> auxList = new List<Transform>();
         patrollingParent.GetComponentsInChildren(false, auxList);
 
-        auxList.RemoveAll((elem) => { return elem.gameObject.name == "PatrollingPoints"; });
+        auxList.RemoveAll((elem) => { return elem.gameObject.name == "ReplenishingPoints"; });
         patrollingPoints = auxList.ToArray();
     }
 
