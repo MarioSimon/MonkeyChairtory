@@ -173,9 +173,10 @@ public class ReplenisherFSM : MonoBehaviour
 
     void ReplenishBananas()
     {
+        //TODO make replenish banana animation
         Debug.Log("Not enough bananas!");
 
-        bananaAmt++;
+        FindObjectOfType<WorldManager>().bananasAmt++;
     }
 
     void ReplenishMonkeys()
@@ -196,6 +197,7 @@ public class ReplenisherFSM : MonoBehaviour
     bool NotEnoughBananas()
     {
         var monkeyAmt = FindObjectsOfType<GorillaUS>().Length;
+        var bananaAmt = FindObjectOfType<WorldManager>().bananasAmt;
 
         return bananaAmt < (monkeyAmt / 2);
     }
