@@ -62,6 +62,8 @@ public class PlanksPalletBehaviour : MonoBehaviour
 
     Vector3 CalculateNextPlankPos()
     {
+        //TODO edit this when plank prefab is available
+
         Vector3 vector = transform.position + Vector3.up * (planksAmt + 1);
 
         return vector;
