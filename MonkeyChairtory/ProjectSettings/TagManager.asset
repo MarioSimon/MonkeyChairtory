@@ -6,11 +6,12 @@ TagManager:
   tags:
   - gorilla
   - Human
+  - BackDoor
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Gorilla
   - Water
   - UI
   - 
