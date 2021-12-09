@@ -79,14 +79,19 @@ public class GorillaUS : MonoBehaviour
         SelectAction();
 
         //TODO make hunger more realistic
-        currentHunger += Time.deltaTime;
+        UpdateHungerValue();
     }
 
     void SetRandomHunger()
     {
         maxSelectedHunger = UnityEngine.Random.Range(minRandomHunger, maxRandomHunger);
 
-        maxSelectedHunger = 40;
+        //maxSelectedHunger = 40;
+    }
+
+    void UpdateHungerValue()
+    {
+        currentHunger += Time.deltaTime;
     }
 
     void CreateUtilityCurves()
