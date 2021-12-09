@@ -37,7 +37,7 @@ public class PlanksPalletBehaviour : MonoBehaviour
     public void IncludePlank(GameObject plank)
     {
         Vector3 position = CalculateNextPlankPos();
-        var newPlank = Instantiate(plank, position, Quaternion.Euler(0, 0, 90));
+        var newPlank = Instantiate(plank, position, Quaternion.Euler(0, 0, 0));
         planks.Add(newPlank);
         planksAmt++;
         if (isFromTreatyZone)
@@ -64,7 +64,7 @@ public class PlanksPalletBehaviour : MonoBehaviour
     {
         //TODO edit this when plank prefab is available
 
-        Vector3 vector = transform.position + Vector3.up * (planksAmt + 1);
+        Vector3 vector = transform.position + Vector3.up * (planksAmt + 1) * 0.2f + new Vector3(0, 0.5f, 0.7f);
 
         return vector;
     }
