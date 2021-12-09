@@ -330,6 +330,7 @@ GameObject:
   - component: {fileID: 8408858805169169839}
   - component: {fileID: 1570476364039457458}
   - component: {fileID: 5244597799975285250}
+  - component: {fileID: 6578214505448052603}
   m_Layer: 0
   m_Name: Gorilla
   m_TagString: Untagged
@@ -465,6 +466,25 @@ MonoBehaviour:
   maxRandomHunger: 40
   maxSelectedHunger: 0
   currentHunger: 0
+--- !u!95 &6578214505448052603
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2782800108302418020}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: c32e3bb3ccab5bf49ab882f2741f0d4c, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &3243996909585911371
 GameObject:
   m_ObjectHideFlags: 0
