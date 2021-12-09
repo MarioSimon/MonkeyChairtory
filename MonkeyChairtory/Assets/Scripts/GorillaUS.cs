@@ -756,18 +756,19 @@ public class GorillaUS : MonoBehaviour
     {
 
         //gorillaAnim.SetTrigger("EatTrigger");
-        //StartCoroutine(Eating());
+        StartCoroutine(Eating());
         Debug.Log("Eat a banana...");
-        currentHunger = 0;
-        FindObjectOfType<WorldManager>().bananasAmt--;
-        actionEnded = true;
-        gorillaAnim.SetTrigger("WalkTrigger");
+        
     }
 
     IEnumerator Eating()
     {
         gorillaAnim.SetTrigger("EatTrigger");
         yield return new WaitForSeconds(1.5f);
+        currentHunger = 0;
+        FindObjectOfType<WorldManager>().bananasAmt--;
+        actionEnded = true;
+        gorillaAnim.SetTrigger("WalkTrigger");
     }
 
     void GetAngry()
