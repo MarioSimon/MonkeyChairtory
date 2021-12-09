@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 582063241510608610}
   m_Layer: 0
   m_Name: Human_Sec
-  m_TagString: Untagged
+  m_TagString: Human
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -110,7 +110,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1bc2b80b82f352749b416737bf945f41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  myState: 0
+  patrollerState: 0
   nearDistance: 1.25
   patrollingPoints: []
   patrollingIndex: 0
