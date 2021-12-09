@@ -55,7 +55,7 @@ public class GorillaUS : MonoBehaviour
     {
         agent = GetComponent<NavMeshAgent>();
         gorillaAnim = GetComponent<Animator>();
-        actionEnded = true;
+        //actionEnded = true;
 
         nearDistance = 3;
         logsTransform = GameObject.Find("LogsPosition").transform;
@@ -72,16 +72,16 @@ public class GorillaUS : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        SelectAction();
+
         if (actionEnded)
         {
             actionEnded = false;
             gorillaCurves.Update();
             hungerBehaviour.Update();
         }
-
+        
         PrintUtilityValues();
-
-        SelectAction();
 
         //TODO make hunger more realistic
         UpdateHungerValue();
@@ -659,11 +659,12 @@ public class GorillaUS : MonoBehaviour
 
     IEnumerator CalmingDown()
     {
-        yield return new WaitForSeconds(5.0f);
+        yield return new WaitForSeconds(15.0f);
 
         currentHunger = 0;
         isJailed = false;
-        actionEnded = true;
+        if(gorillaState == GorillaState.StillAngry)
+            actionEnded = true;
     }
 
     float MonkeysInTreatyZone()
@@ -805,7 +806,7 @@ public class GorillaUS : MonoBehaviour
     void MakePlankFromLog()
     {
         Destroy(logMoved);
-        plankMoved = Instantiate(plankObject, transform.position + Vector3.up * 2, Quaternion.Euler(0, 0, 90));
+        plankMoved = Instantiate(plankObject, transform.position + Vector3.up * 2, Quaternion.Euler(0, 0, 0));
         plankMoved.transform.parent = transform;
     }
 
@@ -840,6 +841,6 @@ public class GorillaUS : MonoBehaviour
 
         aux += "]";
 
-        //Debug.Log(aux);
+        Debug.Log(aux);
     }
 }

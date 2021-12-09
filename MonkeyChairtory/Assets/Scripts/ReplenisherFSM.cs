@@ -33,6 +33,9 @@ public class ReplenisherFSM : MonoBehaviour
     [Header("Replenishing monkeys behaviour")]
     public int minMonkeys = 4;
     public GorillaUS monkey;
+    public Transform huntPoint;
+    private float timePass;
+    private bool hunting;
 
     private StateMachineEngine replenisherFSM;
     private NavMeshAgent agent;
@@ -40,12 +43,16 @@ public class ReplenisherFSM : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        timePass = 0;
+        hunting = false;
+
         myState = ReplenisherState.Patrolling;
         agent = GetComponent<NavMeshAgent>();
 
         peeingPoint = GameObject.Find("PeeingPoint").transform;
         bananaPosition = GameObject.Find("BananaPosition").transform;
         bananaStorage = GameObject.Find("BananaStorage").transform;
+        huntPoint = GameObject.Find("HuntPoint").transform;
 
         SetPatrollingPoints();
         SetRandomTimeToPee();
@@ -69,12 +76,12 @@ public class ReplenisherFSM : MonoBehaviour
 
     void SetPatrollingPoints()
     {
-        var patrollingParent = GameObject.Find("PatrollingPoints");
+        var patrollingParent = GameObject.Find("ReplenishingPoints");
 
         List<Transform> auxList = new List<Transform>();
         patrollingParent.GetComponentsInChildren(false, auxList);
 
-        auxList.RemoveAll((elem) => { return elem.gameObject.name == "PatrollingPoints"; });
+        auxList.RemoveAll((elem) => { return elem.gameObject.name == "ReplenishingPoints"; });
         patrollingPoints = auxList.ToArray();
     }
 
@@ -218,9 +225,26 @@ public class ReplenisherFSM : MonoBehaviour
 
     void ReplenishMonkeys()
     {
-        Debug.Log("Not enough monkeys!");
+        if (hunting)
+            timePass += Time.deltaTime;
 
-        Instantiate(monkey, peeingPoint.position, peeingPoint.rotation);
+        agent.SetDestination(huntPoint.position);
+        currentDestination = huntPoint.position;
+        
+        //Debug.Log("Not enough monkeys!");
+        if (!hunting && Vector3.Distance(transform.position, huntPoint.position) < 1.5f)
+        {
+            timePass = 0;
+            hunting = true;
+            this.GetComponent<MeshRenderer>().enabled = false;
+        }
+
+        if (hunting && timePass > 5)
+        {
+            this.GetComponent<MeshRenderer>().enabled = true;
+            Instantiate(monkey, huntPoint.position, huntPoint.rotation);
+            hunting = false;
+        }
     }
 
     void AtAnyState()
