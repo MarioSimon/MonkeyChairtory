@@ -665,6 +665,7 @@ public class GorillaUS : MonoBehaviour
         isJailed = false;
         if(gorillaState == GorillaState.StillAngry)
             actionEnded = true;
+        gorillaAnim.SetTrigger("WalkTrigger");
     }
 
     float MonkeysInTreatyZone()
@@ -764,6 +765,7 @@ public class GorillaUS : MonoBehaviour
         transform.parent = patroller;
         agent.isStopped = isTrapped = true;
         agent.enabled = false;
+        gorillaAnim.SetTrigger("ErrorTrigger");
     }
 
     public void ReleaseGorilla()
@@ -774,6 +776,7 @@ public class GorillaUS : MonoBehaviour
         isAngry = false;
         isJailed = true;
         currentHunger = 0;
+        gorillaAnim.SetTrigger("StopTrigger");
     }
 
     bool IsNearEnough(Vector3 destination, float nearDistance)
