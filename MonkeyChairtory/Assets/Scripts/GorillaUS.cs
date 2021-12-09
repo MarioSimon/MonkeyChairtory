@@ -60,7 +60,7 @@ public class GorillaUS : MonoBehaviour
         gorillaAnim = GetComponent<Animator>();
         //actionEnded = true;
 
-        nearDistance = 3;
+        nearDistance = 2;
         logsTransform = GameObject.Find("LogsPosition").transform;
         escapingPoint = GameObject.Find("EscapingPoint").transform;
         despawnPoint = GameObject.Find("DespawnPoint").transform;
@@ -450,10 +450,10 @@ public class GorillaUS : MonoBehaviour
 
     IEnumerator FightAgainstTheDoor()
     {
-        yield return new WaitForSeconds(5.0f);
-
-        agent.SetDestination(despawnPoint.position);
-        currentDestination = despawnPoint.position;
+        yield return new WaitForSeconds(30.0f);
+        if (!isJailed && !isTrapped)
+            agent.SetDestination(despawnPoint.position);
+            currentDestination = despawnPoint.position;
 
         //gorillaAnim.SetTrigger("WalkTrigger");
     }
@@ -701,13 +701,13 @@ public class GorillaUS : MonoBehaviour
 
     IEnumerator CalmingDown()
     {
-        yield return new WaitForSeconds(15.0f);
+        yield return new WaitForSeconds(40.0f);
 
         currentHunger = 0;
         isJailed = false;
         if(gorillaState == GorillaState.StillAngry)
             actionEnded = true;
-        gorillaAnim.SetTrigger("WalkTrigger");
+        //gorillaAnim.SetTrigger("WalkTrigger");
     }
 
     float MonkeysInTreatyZone()
@@ -820,7 +820,7 @@ public class GorillaUS : MonoBehaviour
         isAngry = false;
         isJailed = true;
         currentHunger = 0;
-        gorillaAnim.SetTrigger("StopTrigger");
+        gorillaAnim.SetTrigger("WalkTrigger");
     }
 
     bool IsNearEnough(Vector3 destination, float nearDistance)

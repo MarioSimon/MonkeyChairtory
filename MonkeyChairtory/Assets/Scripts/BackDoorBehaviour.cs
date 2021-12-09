@@ -9,7 +9,7 @@ public class BackDoorBehaviour : MonoBehaviour
     private float timePassed;
     private Quaternion aux;
 
-    public float threshold = 5;
+    public float threshold = 15;
 
     // Start is called before the first frame update
     void Start()
@@ -23,7 +23,11 @@ public class BackDoorBehaviour : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        timePassed += Time.deltaTime;
+        //timePassed += Time.deltaTime;
+        if (gorillaInPlace || open)
+        {
+            timePassed += Time.deltaTime;
+        }
         if (gorillaInPlace && timePassed >= threshold)
         {
             transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y + 90, transform.rotation.eulerAngles.z);
@@ -32,7 +36,7 @@ public class BackDoorBehaviour : MonoBehaviour
             timePassed = 0.0f;
         }
 
-        if (open && timePassed >= 3.0f)
+        if (open && timePassed >= 10.0f)
         {
             transform.rotation = aux;
             open = false;

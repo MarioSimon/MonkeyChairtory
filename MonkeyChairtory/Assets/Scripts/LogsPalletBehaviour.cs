@@ -16,7 +16,7 @@ public class LogsPalletBehaviour : MonoBehaviour
 
         var amt = FindObjectOfType<WorldManager>().logsInTreatyZone;
 
-        PresetLogsAmount(FindObjectOfType<GorillaUS>().logObject, amt / 4);
+        PresetLogsAmount(FindObjectOfType<GorillaUS>().logObject, 3);
     }
 
     // Update is called once per frame

@@ -20,9 +20,9 @@ public class PlanksPalletBehaviour : MonoBehaviour
         var mntAmt = FindObjectOfType<WorldManager>().planksInMountingZone;
 
         if (isFromTreatyZone)
-            PresetPlanksAmount(FindObjectOfType<GorillaUS>().plankObject, ttyAmt / 4);
+            PresetPlanksAmount(FindObjectOfType<GorillaUS>().plankObject, 5);
         else
-            PresetPlanksAmount(FindObjectOfType<GorillaUS>().plankObject, mntAmt / 4);
+            PresetPlanksAmount(FindObjectOfType<GorillaUS>().plankObject, 5);
     }
 
     // Update is called once per frame
