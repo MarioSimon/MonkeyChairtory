@@ -57,7 +57,7 @@ public class PatrollerFSM : MonoBehaviour
     {
         patrollerFSM.Update();
 
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             patrollerFSM.Fire("receive warning");
         }
