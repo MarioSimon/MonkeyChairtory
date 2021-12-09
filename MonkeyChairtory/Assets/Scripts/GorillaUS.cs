@@ -47,7 +47,8 @@ public class GorillaUS : MonoBehaviour
     private NavMeshAgent agent;
 
     private Animator gorillaAnim;
-    private Vector3 destination;
+    private Vector3 currentDestination;
+    private Vector3 oldDestination;
 
     // Start is called before the first frame update
     void Start()
@@ -84,6 +85,8 @@ public class GorillaUS : MonoBehaviour
 
         //TODO make hunger more realistic
         UpdateHungerValue();
+
+        oldDestination = currentDestination;
     }
 
     void SetRandomHunger()
@@ -209,16 +212,16 @@ public class GorillaUS : MonoBehaviour
         LogsPalletBehaviour selectedPallet = null;
 
         if (logMoved == null)
-            destination = logsTransform.position;
+            currentDestination = logsTransform.position;
         else if(SelectLogPallet() != null)
         {
             selectedPallet = SelectLogPallet();
-            destination = selectedPallet.transform.position;
+            currentDestination = selectedPallet.transform.position;
         }
 
-        agent.SetDestination(destination);
+        agent.SetDestination(currentDestination);
 
-        if (IsNearEnough(destination, nearDistance))
+        if (IsNearEnough(currentDestination, nearDistance))
         {
             if (logMoved == null)
             {
@@ -243,31 +246,31 @@ public class GorillaUS : MonoBehaviour
         if (logMoved == null && plankMoved == null)
         {
             logsPallet = SelectLogPallet(false);
-            destination = logsPallet.transform.position;
+            currentDestination = logsPallet.transform.position;
         }
         else if (SelectLogToPlankTable() != null && !isInTreatyZone)
         {
             logToPlankTable = SelectLogToPlankTable();
-            destination = logToPlankTable.transform.position;
+            currentDestination = logToPlankTable.transform.position;
         }
         else if (isInTreatyZone && plankMoved == null)
         {
-            destination = transform.position;
+            currentDestination = transform.position;
         }
         else if (plankMoved != null)
         {
             planksPallet = SelectPlanksPallet(true);
-            destination = planksPallet.transform.position;
+            currentDestination = planksPallet.transform.position;
         }
         else
         {
-            agent.SetDestination(destination);
+            agent.SetDestination(currentDestination);
             actionEnded = true;
         }
 
-        agent.SetDestination(destination);
+        agent.SetDestination(currentDestination);
 
-        if (IsNearEnough(destination, nearDistance))
+        if (IsNearEnough(currentDestination, nearDistance))
         {
             if (logsPallet != null)
             {
@@ -309,17 +312,17 @@ public class GorillaUS : MonoBehaviour
         if (plankMoved == null)
         {
             startPlanksPallet = SelectPlanksPallet(true, false);
-            destination = startPlanksPallet.transform.position;
+            currentDestination = startPlanksPallet.transform.position;
         }
         else
         {
             endPlanksPallet = SelectPlanksPallet(false);
-            destination = endPlanksPallet.transform.position;
+            currentDestination = endPlanksPallet.transform.position;
         }
 
-        agent.SetDestination(destination);
+        agent.SetDestination(currentDestination);
 
-        if (IsNearEnough(destination, nearDistance))
+        if (IsNearEnough(currentDestination, nearDistance))
         {
             if (startPlanksPallet != null)
             {
@@ -341,33 +344,34 @@ public class GorillaUS : MonoBehaviour
         if (plankMoved == null && chairMoved == null)
         {
             planksPallet = SelectPlanksPallet(false, false);
-            destination = planksPallet.transform.position;
+            currentDestination = planksPallet.transform.position;
         }
         else if (SelectLogToPlankTable() != null && !isInMountingZone)
         {
             plankToChairTable = SelectPlankToChairTable();
-            destination = plankToChairTable.transform.position;
+            currentDestination = plankToChairTable.transform.position;
         }
 
         else if (isInMountingZone && chairMoved == null)
         {
-            destination = transform.position;
+            currentDestination = transform.position;
         }
         else if (chairMoved != null)
         {
             //TODO include chair position
             //planksPallet = SelectPlanksPallet(true);
-            destination = logsTransform.position;
+            currentDestination = logsTransform.position;
         }
         else
         {
-            agent.SetDestination(destination);
+            agent.SetDestination(currentDestination);
             actionEnded = true;
         }
 
-        agent.SetDestination(destination);
+        if(oldDestination != currentDestination)
+            agent.SetDestination(currentDestination);
 
-        if (IsNearEnough(destination, nearDistance))
+        if (IsNearEnough(currentDestination, nearDistance))
         {
             if (planksPallet != null)
             {
@@ -389,7 +393,7 @@ public class GorillaUS : MonoBehaviour
                     MakeChairFromPlank();
                     isMountingAChair = false;
                 }
-                if (destination == logsTransform.position && chairMoved != null)
+                if (currentDestination == logsTransform.position && chairMoved != null)
                 {
                     Destroy(chairMoved);
                     isInMountingZone = false;
@@ -731,6 +735,7 @@ public class GorillaUS : MonoBehaviour
 
     void EatBanana()
     {
+        FindObjectOfType<WorldManager>().bananasAmt--;
         StartCoroutine(Eating());
         Debug.Log("Eat a banana...");
     }
@@ -740,7 +745,6 @@ public class GorillaUS : MonoBehaviour
         gorillaAnim.SetTrigger("EatTrigger");
         yield return new WaitForSeconds(2.5f);
         currentHunger = 0;
-        FindObjectOfType<WorldManager>().bananasAmt--;
         actionEnded = true;
         gorillaAnim.SetTrigger("WalkTrigger");
     }

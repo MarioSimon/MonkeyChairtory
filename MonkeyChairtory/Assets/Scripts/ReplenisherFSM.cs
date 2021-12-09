@@ -23,7 +23,10 @@ public class ReplenisherFSM : MonoBehaviour
     public float maxTimePeeing = 4f;
 
     [Header("Replenishing bananas behaviour")]
-    public int bananaAmt = 4;
+    public int maxBananasHeld = 4;
+    [SerializeField] private int bananasHeld = 0;
+    public Transform bananaStorage;
+    public Transform bananaPosition;
 
     [Header("Replenishing monkeys behaviour")]
     public int minMonkeys = 4;
@@ -39,6 +42,8 @@ public class ReplenisherFSM : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
 
         peeingPoint = GameObject.Find("PeeingPoint").transform;
+        bananaPosition = GameObject.Find("BananaPosition").transform;
+        bananaStorage = GameObject.Find("BananaStorage").transform;
 
         SetPatrollingPoints();
         SetRandomTimeToPee();
@@ -98,6 +103,8 @@ public class ReplenisherFSM : MonoBehaviour
         State replenishingBananas = replenisherFSM.CreateState("replenishbananas", () => {
             //Debug.Log("Replenishing bananas");
             myState = ReplenisherState.ReplenishBananas;
+            agent.SetDestination(bananaStorage.position);
+            currentDestination = bananaStorage.position;
         });
         State replenishingMonkeys = replenisherFSM.CreateState("replenishingmonkeys", () => {
             //Debug.Log("Replenishing monkey");
@@ -176,7 +183,28 @@ public class ReplenisherFSM : MonoBehaviour
         //TODO make replenish banana animation
         Debug.Log("Not enough bananas!");
 
-        FindObjectOfType<WorldManager>().bananasAmt++;
+        if (FlattenedDistance(transform.position, currentDestination) < nearDistance)
+        {
+            if (currentDestination == bananaStorage.position)
+            {
+                bananasHeld = maxBananasHeld;
+                agent.SetDestination(bananaPosition.position);
+                currentDestination = bananaPosition.position;
+            }
+            else
+            {
+                if(bananasHeld > 0)
+                {
+                    FindObjectOfType<WorldManager>().bananasAmt += bananasHeld;
+                    bananasHeld = 0;
+                }
+                if (NotEnoughBananas())
+                {
+                    agent.SetDestination(bananaStorage.position);
+                    currentDestination = bananaStorage.position;
+                }
+            }
+        }
     }
 
     void ReplenishMonkeys()
