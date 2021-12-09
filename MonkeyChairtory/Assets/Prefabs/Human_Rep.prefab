@@ -111,7 +111,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   myState: 0
-  nearDistance: 1.25
+  nearDistance: 2
   patrollingPoints: []
   patrollingIndex: 0
   currentDestination: {x: 0, y: 0, z: 0}
@@ -122,6 +122,7 @@ MonoBehaviour:
   minTimePeeing: 1.5
   maxTimePeeing: 4
   bananaAmt: 0
+  bananaPosition: {fileID: 0}
   minMonkeys: 4
   monkey: {fileID: 5912138955547204452, guid: cb56c46443fa50144bf686e97fd1c898, type: 3}
 --- !u!195 &6782110221323133850
