@@ -207,7 +207,7 @@ public class PatrollerFSM : MonoBehaviour
 
         foreach (var gorilla in FindObjectsOfType<GorillaUS>())
         {
-            if (!gorilla.isAngry || gorilla.isTrapped) continue;
+            if (!gorilla.isAngry || gorilla.isTrapped || gorilla.isJailed) continue;
 
             float distance = FlattenedDistance(transform.position, gorilla.transform.position);
             if (distance < minDistance)
