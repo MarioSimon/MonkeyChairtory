@@ -430,12 +430,22 @@ public class GorillaUS : MonoBehaviour
         if(IsNearEnough(currentDestination, nearDistance))
         {
             StartCoroutine(FightAgainstTheDoor());
+            gorillaAnim.SetTrigger("AttackTrigger");
         }
 
         if (IsNearEnough(despawnPoint.position, nearDistance))
         {
-            Destroy(gameObject);
+            //transform.RotateAround(transform.position, transform.up, 180f);
+            StartCoroutine(Escape());
         }
+    }
+
+    IEnumerator Escape()
+    {
+        
+        gorillaAnim.SetTrigger("FlipTrigger");
+        yield return new WaitForSeconds(4.5f);
+        Destroy(gameObject);
     }
 
     IEnumerator FightAgainstTheDoor()
@@ -444,6 +454,8 @@ public class GorillaUS : MonoBehaviour
 
         agent.SetDestination(despawnPoint.position);
         currentDestination = despawnPoint.position;
+
+        //gorillaAnim.SetTrigger("WalkTrigger");
     }
 
     LogsPalletBehaviour SelectLogPallet(bool getMinimum = true)
@@ -786,6 +798,7 @@ public class GorillaUS : MonoBehaviour
         Debug.LogError("Getting angry!");
         gorillaState = GorillaState.StillAngry;
         isAngry = true;
+        //gorillaAnim.SetTrigger("AttackTrigger");
         agent.SetDestination(escapingPoint.position);
         currentDestination = escapingPoint.position;
     }
