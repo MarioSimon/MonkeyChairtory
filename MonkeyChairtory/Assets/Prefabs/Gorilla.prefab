@@ -331,6 +331,7 @@ GameObject:
   - component: {fileID: 1570476364039457458}
   - component: {fileID: 5244597799975285250}
   - component: {fileID: 6578214505448052603}
+  - component: {fileID: 7394375710966902918}
   m_Layer: 0
   m_Name: Gorilla
   m_TagString: gorilla
@@ -452,7 +453,7 @@ MonoBehaviour:
   logsTransform: {fileID: 0}
   logObject: {fileID: 5728157171172634068, guid: 42e167742db22cb44ab39e979df5a569, type: 3}
   logMoved: {fileID: 0}
-  plankObject: {fileID: 45834286527845871, guid: da52cdd856396ae469121ad437a598dd, type: 3}
+  plankObject: {fileID: 3823002968064266009, guid: 4065be94c6fe9ab4bb1b9b7624129865, type: 3}
   plankMoved: {fileID: 0}
   isInTreatyZone: 0
   isTreatingALog: 0
@@ -485,6 +486,22 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!208 &7394375710966902918
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2782800108302418020}
+  m_Enabled: 0
+  serializedVersion: 3
+  m_Shape: 0
+  m_Extents: {x: 0.5, y: 1, z: 0.5}
+  m_MoveThreshold: 0.1
+  m_Carve: 0
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 1, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1 &3243996909585911371
 GameObject:
   m_ObjectHideFlags: 0

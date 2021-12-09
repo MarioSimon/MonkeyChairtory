@@ -46,12 +46,16 @@ public class GorillaUS : MonoBehaviour
     private BehaviourTreeEngine hungerBehaviour;
     private NavMeshAgent agent;
 
+    private Animator gorillaAnim;
+
     // Start is called before the first frame update
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
+        gorillaAnim = GetComponent<Animator>();
         actionEnded = true;
 
+        nearDistance = 3;
         logsTransform = GameObject.Find("LogsPosition").transform;
 
         SetRandomHunger();
@@ -630,20 +634,24 @@ public class GorillaUS : MonoBehaviour
 
     IEnumerator TreatingALog()
     {
+        gorillaAnim.SetTrigger("WorkTrigger");
         yield return new WaitForSeconds(2.5f);
 
         Debug.Log("Log treated!");
         logTreated = true;
         ReleaseLogToPlankTable();
+        gorillaAnim.SetTrigger("WalkTrigger");
     }
 
     IEnumerator MountingAChair()
     {
+        gorillaAnim.SetTrigger("WorkTrigger");
         yield return new WaitForSeconds(2.5f);
 
         Debug.Log("Chair mounted!");
         chairMounted = true;
         ReleasePlankToChairTable();
+        gorillaAnim.SetTrigger("WalkTrigger");
     }
 
     PlankToChairTableBehaviour SelectPlankToChairTable()
@@ -746,10 +754,20 @@ public class GorillaUS : MonoBehaviour
 
     void EatBanana()
     {
+
+        //gorillaAnim.SetTrigger("EatTrigger");
+        //StartCoroutine(Eating());
         Debug.Log("Eat a banana...");
         currentHunger = 0;
         FindObjectOfType<WorldManager>().bananasAmt--;
         actionEnded = true;
+        gorillaAnim.SetTrigger("WalkTrigger");
+    }
+
+    IEnumerator Eating()
+    {
+        gorillaAnim.SetTrigger("EatTrigger");
+        yield return new WaitForSeconds(1.5f);
     }
 
     void GetAngry()
